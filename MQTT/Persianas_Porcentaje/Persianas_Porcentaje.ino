@@ -4,18 +4,18 @@
 #include <PubSubClient.h>
 #include <ArduinoOTA.h>
 
-const char* ssid  = "SSID"; //Nombre de tu SSID
-const char* password = "PASSWORD"; //Contraseña de tu SSID
-const char* mqtt_server = "XXX.XXX.X.XX"; //I.P de tu servidor MQTT
+const char* ssid  = "Juan"; //Nombre de tu SSID
+const char* password = "483828869562Vv"; //Contraseña de tu SSID
+const char* mqtt_server = "192.168.1.19"; //I.P de tu servidor MQTT
 int mqttport = 1883;
 const char* mqttusuario = "MQTT"; // Usuario MQTT en Home Assistant
-const char* mqttpass = "PASS_MQTT"; // Contraseña para el usuario MQTT en Home Assistant
-const char* OTA_password = "PASS_OTA"; // Contraseña OTA
-#define CLIENT_ID   "Persiana_Sala" //debe ser único en tu sistema
-#define MQTT_TOPIC  "persianas/sala" //debe que ser el mismo que tengas en configuration.yaml
+const char* mqttpass = "9562"; // Contraseña para el usuario MQTT en Home Assistant
+const char* OTA_password = "9562"; // Contraseña OTA
+#define CLIENT_ID   "Persiana_Soncito_D" //debe ser único en tu sistema
+#define MQTT_TOPIC  "persianas/saloncito2" //debe que ser el mismo que tengas en configuration.yaml
 
-unsigned long periodo_subir = 30000;  // tiempo que tarda la persiana en subir
-unsigned long periodo_bajar = 30000;  // tiempo que tarda la persiana en bajar
+unsigned long periodo_subir = 19500;  // tiempo que tarda la persiana en subir
+unsigned long periodo_bajar = 19000;  // tiempo que tarda la persiana en bajar
 unsigned long periodo3;
 unsigned long periodo4;
 byte temp_subir = 0; 

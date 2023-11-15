@@ -1,0 +1,2 @@
+Añadida funconalidad para subir y bajar las persianas con dos pulsadores.
+Añadida funcionalidad para subir y bajar las persianas mediante los pulsadores aunque no tengamos conexión a Wifi o MQTT.

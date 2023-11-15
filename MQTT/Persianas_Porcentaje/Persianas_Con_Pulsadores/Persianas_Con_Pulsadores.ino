@@ -4,9 +4,9 @@
 #include <PubSubClient.h>
 #include <ArduinoOTA.h>
 
-const char* ssid = "SSID";                //Nombre de tu SSID
-const char* password = "PASSWORD";        //Contraseña de tu SSID
-const char* mqtt_server = "XXX.XXX.X.X";  //I.P de tu servidor MQTT
+const char* ssid = "SSID";                 //Nombre de tu SSID
+const char* password = "PASSWORD";         //Contraseña de tu SSID
+const char* mqtt_server = "XXX.XXX.X.XX";  //I.P de tu servidor MQTT
 int mqttport = 1883;
 const char* mqttusuario = "MQTT";       // Usuario MQTT en Home Assistant
 const char* mqttpass = "PASS_MQTT";     // Contraseña para el usuario MQTT en Home Assistant
@@ -14,8 +14,8 @@ const char* OTA_password = "PASS_OTA";  // Contraseña OTA
 #define CLIENT_ID "Persiana_Sala"       //debe ser único en tu sistema
 #define MQTT_TOPIC "persianas/sala"     //debe que ser el mismo que tengas en configuration.yaml
 
-unsigned long periodo_subir = 15000;  // tiempo que tarda la persiana en subir
-unsigned long periodo_bajar = 15000;  // tiempo que tarda la persiana en bajar
+unsigned long periodo_subir = 30000;  // tiempo que tarda la persiana en subir (segundos * 1000)
+unsigned long periodo_bajar = 30000;  // tiempo que tarda la persiana en bajar (segundos * 1000)
 unsigned long periodo3;
 unsigned long periodo4;
 byte temp_subir = 0;
@@ -33,23 +33,6 @@ int position_str;
 int pos_str;
 int pos_real;
 
-const int Pul_subir = 5; //Lo conectamos a  D1
-const int Pul_bajar = 4; //Lo conectamos a  D2
-int val1 = 0;
-int val2 = 0;
-int old_val1 = 0;
-int old_val2 = 0;
-int state = 0;
-int old_state = 0;
-int state2 = 0;
-int old_state2 = 0;
-unsigned long tiempo1;
-unsigned long tiempo2;
-unsigned long tiempomax1 = 200;
-unsigned long tiempomax2 = 200;
-bool flanco1 = false;
-bool flanco2 = false;
-
 WiFiClient espClient;
 PubSubClient client(espClient);
 
@@ -66,8 +49,6 @@ void setup() {
   digitalWrite(relay2, HIGH);
   pinMode(relay1, OUTPUT);
   pinMode(relay2, OUTPUT);
-  pinMode(Pul_subir, INPUT_PULLUP);
-  pinMode(Pul_bajar, INPUT_PULLUP);
   delay(10);
 
   //inicia wifi y mqqt
@@ -98,7 +79,7 @@ void setup() {
   ArduinoOTA.begin();
 
   Serial.println("setup end");
- }
+}
 
 void loop() {
   ArduinoOTA.handle();
@@ -114,68 +95,7 @@ void loop() {
   }
   client.loop();
 
-///// PULSADOR SUBIR ////
-
-  val1 = digitalRead(Pul_subir);
-
-  if (!val1 && old_val1) {  // flanco de 1 a 0
-    tiempo1 = millis();     // inicias la cuenta
-    flanco1 = true;         //
-  }
-  old_val1 = val1;  // guardo ultimo cambio
-
-  if (flanco1 && !val1)                      // durante el tiempo que val1 esta en LOW
-    if (millis() - tiempo1 >= tiempomax1) {  // se supero el segundo?
-      state = 1 - state;
-      flanco1 = false;
-    } else
-      state = state;
-  else {
-    flanco1 = false;  // si se suelta el pulsador
-  }
-
-///// PULSADOR BAJAR ////
-
-  val2 = digitalRead(Pul_bajar);
-
-  if (!val2 && old_val2) {  // flanco de 1 a 0
-    tiempo2 = millis();     // inicias la cuenta
-    flanco2 = true;         //
-  }
-  old_val2 = val2;  // guardo ultimo cambio
-
-  if (flanco2 && !val2)                      // durante el tiempo que val1 esta en LOW
-    if (millis() - tiempo2 >= tiempomax2) {  // se supero el segundo?
-      state2 = 1 - state2;
-      flanco2 = false;
-    } else
-      state2 = state2;
-  else {
-    flanco2 = false;  // si se suelta el pulsador
-  }
-///// ACCION PULSADORES ////
-  if (state == 1 && old_state == 0) {
-
-    position_str = 100;
-  }
-
-  if (state == 0 && old_state == 1) {
-    parada();
-  }
-  old_state = state;
-
-  if (state2 == 1 && old_state2 == 0) {
-
-    position_str = 0;
-  }
-
-  if (state2 == 0 && old_state2 == 1) {
-    parada();
-  }
-
-  old_state2 = state2;
-
-///// ACTIVAR CONTADOR PORCENTAJE ////
+  ///// ACTIVAR CONTADOR PORCENTAJE ////
   if (temp_subir_p == 1 && (position_str > position_real)) {
     periodo3 = ((position_str - position_real) * periodo_subir / 100);
     pos_str = position_str;
@@ -201,9 +121,9 @@ void loop() {
     temp_subir = 0;
     temp_subir_p = 0;
     temp_bajar_p = 0;
- }
+  }
 
-///// CONTADOR SUBIR PORCENTAJE ////
+  ///// CONTADOR SUBIR PORCENTAJE ////
 
   if (temp_subir == 1) {
 
@@ -220,9 +140,10 @@ void loop() {
     if (currentMillis - tiempoAnterior3 > periodo3) {
       parada();
     }
- }
+  }
 
-///// CONTADOR BAJAR PORCENTAJE ////
+
+  ///// CONTADOR BAJAR PORCENTAJE ////
   if (temp_bajar == 1) {
 
     currentMillis = millis();
@@ -239,7 +160,8 @@ void loop() {
       parada();
     }
   }
- }
+}
+
 
 void setup_wifi() {
   delay(10);
@@ -264,7 +186,7 @@ void setup_wifi() {
   Serial.println("WiFi conectado");
   Serial.println("Dirección IP: ");
   Serial.println(WiFi.localIP());
- }
+}
 
 void callback(char* topic, byte* payload, unsigned int length) {
   String payloadStr = "";
@@ -294,17 +216,13 @@ void callback(char* topic, byte* payload, unsigned int length) {
       parada();
     }
   }
- }
+}
 
 void parada() {
   digitalWrite(relay2, HIGH);
   digitalWrite(relay1, HIGH);
   position_str = position_real;
   Serial.println("PARADA");
-  Serial.println(state);
-  Serial.println(state2);
-  Serial.println(old_state);
-  Serial.println(old_state2);
   String position_ = String(position_real);
   client.publish(MQTT_TOPIC "/estado", "parada");
   client.publish(MQTT_TOPIC "/position", position_.c_str(), true);
@@ -312,7 +230,7 @@ void parada() {
   temp_subir = 0;
   temp_subir_p = 1;
   temp_bajar_p = 1;
- }
+}
 void reconnect() {
 
   while (!client.connected()) {
@@ -341,4 +259,4 @@ void reconnect() {
       }
     }
   }
- }
+}

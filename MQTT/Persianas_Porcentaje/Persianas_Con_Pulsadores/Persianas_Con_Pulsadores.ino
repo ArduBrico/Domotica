@@ -6,15 +6,15 @@
 
 ///// PARAMETROS CONFIGURABLES /////
 
-const char* ssid = "SSID";                 // Nombre de tu SSID
-const char* password = "PASSWORD SSID";    // Contraseña de tu SSID
+const char* ssid = "SSID";            // Nombre de tu SSID
+const char* password = "PASSWORD";        // Contraseña de tu SSID
 const char* mqtt_server = "XXX.XXX.X.XX";  // I.P de tu servidor MQTT
 int mqttport = 1883;                       // Puerto para MQTT
 const char* mqttusuario = "MQTT";          // Usuario MQTT en Home Assistant
-const char* mqttpass = "PASS_MQTT";        // Contraseña para el usuario MQTT en Home Assistant
-const char* OTA_password = "PASS_OTA";     // Contraseña OTA
-#define CLIENT_ID "Persiana_Sala"           // debe ser único en tu sistema
-#define MQTT_TOPIC "persianas/sala"  // debe que ser el mismo que tengas en configuration.yaml
+const char* mqttpass = "PASS_MQTT";             // Contraseña para el usuario MQTT en Home Assistant
+const char* OTA_password = "PASS_OTA";         // Contraseña OTA
+#define CLIENT_ID "Persiana_Sala"          // debe ser único en tu sistema
+#define MQTT_TOPIC "persianas/sala"        // debe que ser el mismo que tengas en configuration.yaml
 
 const int relay1 = 13;    // Relé subir lo conectamos a D7
 const int relay2 = 12;    // Relé bajar lo conectamos a D6
@@ -23,6 +23,7 @@ const int Pul_bajar = 4;  // Pulsador bajar lo conectamos a  D2
 
 unsigned long periodo_subir = 15000;  // tiempo que tarda la persiana en subir
 unsigned long periodo_bajar = 15000;  // tiempo que tarda la persiana en bajar
+int RECONECT = 20;                    // Segundos hasta nuevo intento de conexión
 
 ///// FIN DE PARAMETROS CONFIGURABLES /////
 
@@ -40,6 +41,7 @@ unsigned long currentMillis;
 int position_set;
 int position_real;
 int position_str;
+int position_send;
 int pos_str;
 int pos_real;
 int val1 = 0;
@@ -72,7 +74,7 @@ const char* topic_pos = MQTT_TOPIC "/position";
 
 void setup() {
   Serial.begin(9600);
-  Serial.println("setup begin");
+  Serial.println("Iniciando...");
   digitalWrite(relay1, HIGH);  // Iniciamoslos relés apagados, cambiar a LOW si funciona a la inversa
   digitalWrite(relay2, HIGH);  // Iniciamoslos relés apagados, cambiar a LOW si funciona a la inversa
   pinMode(relay1, OUTPUT);
@@ -106,7 +108,7 @@ void setup() {
   });
   ArduinoOTA.begin();
 
-  Serial.println("setup end");
+  Serial.println("'Setup' finalizado ");
 }
 void loop() {
   ArduinoOTA.handle();
@@ -124,7 +126,7 @@ void loop() {
     delay(10);
   }
 
-  if ((contador == true) && (cont == 1000)) {
+  if ((contador == true) && (cont == RECONECT * 100)) {
     flancomqtt = true;
     flancowifi = true;
     reconnect();
@@ -294,7 +296,9 @@ void setup_wifi() {
     }
   }
   if (WiFi.status() != WL_CONNECTED) {
-    Serial.println("No se ha podido conectar al Wifi, nuevo intento en unos segundos...");
+    Serial.print("No se ha podido conectar al Wifi, nuevo intento en ");
+    Serial.print(RECONECT);
+    Serial.println(" segundos...");
     flancowifi = false;
   } else {
     Serial.println("");
@@ -345,6 +349,8 @@ void parada() {
   String position_ = String(position_real);
   client.publish(MQTT_TOPIC "/estado", "parada");
   client.publish(MQTT_TOPIC "/position", position_.c_str(), true);
+  Serial.print(position_);
+  Serial.println(" %");
   temp_bajar = 0;
   temp_subir = 0;
   temp_subir_p = 1;
@@ -359,10 +365,12 @@ void parada() {
 void reconnect() {
 
   while ((!client.connected()) && (flancomqtt == true)) {
-    Serial.print("Attempting MQTT connection...");
+    Serial.println("Conectando con MQTT");
     // Attempt to connect
-    if (client.connect(CLIENT_ID, mqttusuario, mqttpass)) {
-      Serial.println("connected");
+    if (client.connect(CLIENT_ID)) {
+      Serial.println("conectado");
+      String position_ = String(position_real);
+      client.publish(MQTT_TOPIC "/position", position_.c_str(), true);
       flancomqtt = false;
       delay(20);
       client.subscribe(MQTT_TOPIC "/comando");
@@ -370,20 +378,13 @@ void reconnect() {
       client.subscribe(MQTT_TOPIC "/position");
 
     } else if (flancomqtt == true) {
-      Serial.print("failed, rc=");
-      Serial.print(client.state());
-      Serial.println(" try again in 5 seconds");  // intenamos conectar al servidos MQTT durante 5 segundos.
-
-      for (int i = 0; i <= 500; i++) {
-        delay(10);
-        if (i == 500) {
-          cont = 0;
-          flancowifi = false;
-          flancomqtt = false;
-          contador = true;
-          break;
-        }
-      }
+      Serial.print("No se ha podido conectar, nuevo intento en ");  // intenamos conectar al servidos MQTT durante 5 segundos.
+      Serial.print(RECONECT);
+      Serial.println(" segundos...");
+      cont = 0;
+      flancowifi = false;
+      flancomqtt = false;
+      contador = true;
     }
   }
 }

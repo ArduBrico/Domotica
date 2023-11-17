@@ -6,13 +6,13 @@
 
 ///// PARAMETROS CONFIGURABLES /////
 
-const char* ssid = "SSID";            // Nombre de tu SSID
-const char* password = "PASSWORD";        // Contraseña de tu SSID
+const char* ssid = "SSID";                 // Nombre de tu SSID
+const char* password = "PASSWORD";         // Contraseña de tu SSID
 const char* mqtt_server = "XXX.XXX.X.XX";  // I.P de tu servidor MQTT
 int mqttport = 1883;                       // Puerto para MQTT
 const char* mqttusuario = "MQTT";          // Usuario MQTT en Home Assistant
-const char* mqttpass = "PASS_MQTT";             // Contraseña para el usuario MQTT en Home Assistant
-const char* OTA_password = "PASS_OTA";         // Contraseña OTA
+const char* mqttpass = "PASS_MQTT";        // Contraseña para el usuario MQTT en Home Assistant
+const char* OTA_password = "PASS_OTA";     // Contraseña OTA
 #define CLIENT_ID "Persiana_Sala"          // debe ser único en tu sistema
 #define MQTT_TOPIC "persianas/sala"        // debe que ser el mismo que tengas en configuration.yaml
 
@@ -296,7 +296,7 @@ void setup_wifi() {
     }
   }
   if (WiFi.status() != WL_CONNECTED) {
-    Serial.print("No se ha podido conectar al Wifi, nuevo intento en ");
+    Serial.print("No se ha podido conectar al Wifi, nuevo intento en ");  // intenamos conectar al Wifi durante los segundos configurados.
     Serial.print(RECONECT);
     Serial.println(" segundos...");
     flancowifi = false;
@@ -378,7 +378,7 @@ void reconnect() {
       client.subscribe(MQTT_TOPIC "/position");
 
     } else if (flancomqtt == true) {
-      Serial.print("No se ha podido conectar, nuevo intento en ");  // intenamos conectar al servidos MQTT durante 5 segundos.
+      Serial.print("No se ha podido conectar, nuevo intento en ");  // intenamos conectar al servidos MQTT durante los segundos configurados.
       Serial.print(RECONECT);
       Serial.println(" segundos...");
       cont = 0;

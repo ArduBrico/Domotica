@@ -75,8 +75,8 @@ const char* topic_pos = MQTT_TOPIC "/position";
 void setup() {
   Serial.begin(9600);
   Serial.println("Iniciando...");
-  digitalWrite(relay1, HIGH);  // Iniciamoslos relés apagados, cambiar a LOW si funciona a la inversa
-  digitalWrite(relay2, HIGH);  // Iniciamoslos relés apagados, cambiar a LOW si funciona a la inversa
+  digitalWrite(relay1, HIGH);  // Iniciamos los relés apagados, cambiar a LOW si funciona a la inversa
+  digitalWrite(relay2, HIGH);  // Iniciamos los relés apagados, cambiar a LOW si funciona a la inversa
   pinMode(relay1, OUTPUT);
   pinMode(relay2, OUTPUT);
   pinMode(Pul_subir, INPUT_PULLUP);  // Utilizamos la resistencia interna de la placa
@@ -114,6 +114,7 @@ void loop() {
   ArduinoOTA.handle();
 
   ///// INTENTAMOS CONECTAR A WIFI, SI NO CONECTA, ESPERAMOS UN TIEMPO /////
+
   if ((WiFi.status() != WL_CONNECTED) && (flancowifi == true)) {
     setup_wifi();
     reconnect();
@@ -296,7 +297,7 @@ void setup_wifi() {
     }
   }
   if (WiFi.status() != WL_CONNECTED) {
-    Serial.print("No se ha podido conectar al Wifi, nuevo intento en ");  // intenamos conectar al Wifi durante los segundos configurados.
+    Serial.print("No se ha podido conectar al Wifi, nuevo intento en ");  // Intenamos conectar al Wifi durante los segundos configurados.
     Serial.print(RECONECT);
     Serial.println(" segundos...");
     flancowifi = false;
@@ -366,8 +367,7 @@ void reconnect() {
 
   while ((!client.connected()) && (flancomqtt == true)) {
     Serial.println("Conectando con MQTT");
-    // Attempt to connect
-    if (client.connect(CLIENT_ID)) {
+    if (client.connect(CLIENT_ID, mqttusuario, mqttpass)) {
       Serial.println("conectado");
       String position_ = String(position_real);
       client.publish(MQTT_TOPIC "/position", position_.c_str(), true);
@@ -378,7 +378,7 @@ void reconnect() {
       client.subscribe(MQTT_TOPIC "/position");
 
     } else if (flancomqtt == true) {
-      Serial.print("No se ha podido conectar, nuevo intento en ");  // intenamos conectar al servidos MQTT durante los segundos configurados.
+      Serial.print("No se ha podido conectar, nuevo intento en ");  // Intenamos conectar al servidos MQTT durante los segundos configurados.
       Serial.print(RECONECT);
       Serial.println(" segundos...");
       cont = 0;

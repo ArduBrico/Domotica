@@ -1,0 +1,29 @@
+  light:
+
+    - name: "Luz 1"
+      command_topic: "luces/1/comando"
+      state_topic: "luces/1/estado"
+      unique_id: "Luz_1"
+      payload_off: "0"
+      payload_on: "1" 
+
+    - name: "Luz 2"
+      command_topic: "luces/2/comando"
+      state_topic: "luces/2/estado"
+      unique_id: "Luz_2"
+      payload_off: "0"
+      payload_on: "1" 
+
+    - name: "Luz 3"
+      command_topic: "luces/3/comando"
+      state_topic: "luces/3/estado"
+      unique_id: "Luz_3"
+      payload_off: "0"
+      payload_on: "1" 
+
+    - name: "Luz 4"
+      command_topic: "luces/4/comando"
+      state_topic: "luces/4/estado"
+      unique_id: "Luz_4"
+      payload_off: "0"
+      payload_on: "1" 

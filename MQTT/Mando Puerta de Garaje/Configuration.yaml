@@ -1,0 +1,4 @@
+  sensor:
+    - name: "Sensor mando coche"
+      unique_id: "sensor_mando_coche"
+      state_topic: "mando/estado"

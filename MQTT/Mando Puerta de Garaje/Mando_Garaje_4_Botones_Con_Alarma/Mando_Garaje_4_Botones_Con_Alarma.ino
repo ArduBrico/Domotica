@@ -496,8 +496,8 @@ const unsigned char* imagenes[5] = {
 };
 // Usamos un "array" para llamar a la imagen que necesitemos para la animación armando alarma
 const unsigned char* imagenes_A[2] = {
-  AlarmaAusente,   // Lo llamaremos con "imagenes_A[0]"
-  AlarmaArmando  // Lo llamaremos con "imagenes_A[1]"
+  AlarmaAusente,  // Lo llamaremos con "imagenes_A[0]"
+  AlarmaArmando   // Lo llamaremos con "imagenes_A[1]"
 };
 void setup() {
   Serial.begin(9600);                                // Iniciamos el Serial
@@ -565,11 +565,12 @@ void loop() {
 
   old_valAbrir = valAbrir;  // Igualamos de nuevo los valores
 
-  if (flancoBotonAbrirOn && (valAbrir == LOW))         // Si el pulsador de abrir continua pulsado
-    if (millis() - tiempoBotonAbrirOn >= tiempomax) {  // Y ha pasado el tiempo configurado para evitar el "efecto rebote"
-      client.publish(Topic_Mando, "Abrir On", true);   // Enviamos el mensaje "Abrir On" al sensor de mando de Home Assistant
-      client.publish(Topic_Puerta "/comando", "1");    // Enviamos la orden de abrir la puerta al topic de Home Assistant
-      flancoBotonAbrirOn = false;                      // Ponemos el flanco en "falso" para que se envíe solo una vez con cada pulsación
+  if (flancoBotonAbrirOn && (valAbrir == LOW))           // Si el pulsador de abrir continua pulsado
+    if (millis() - tiempoBotonAbrirOn >= tiempomax) {    // Y ha pasado el tiempo configurado para evitar el "efecto rebote"
+      client.publish(Topic_Mando, "Abrir On", true);     // Enviamos el mensaje "Abrir On" al sensor de mando de Home Assistant
+      client.publish(Topic_Puerta "/comando", "1");      // Enviamos la orden de abrir la puerta al topic de Home Assistant
+      client.publish("alarmo/command", "disarm", true);  // Descativamos la alarma
+      flancoBotonAbrirOn = false;                        // Ponemos el flanco en "falso" para que se envíe solo una vez con cada pulsación
     }
 
   if (flancoBotonAbrirOff && (valAbrir == HIGH))        // Si el pulsador no se pulsa
@@ -783,11 +784,11 @@ void callback(char* topic, byte* payload, unsigned int length) {  // Función pa
       display.drawBitmap(82, 9, AlarmaCasa, 50, 50, 1);  // Mostramos la imagen de alarma modo Armada en casa
       display.display();                                 // Lo mostramos en pantalla
 
-    } else if (message == "armed_away") {                 // Si el mensaje es "armed_away" (modo Armada ausente)
-      estado_armando = 0;                                 // Ponemos el estado de "armando" en 0
-      display.fillRect(82, 9, 64, 64, 0);                 // Borramos la imagen anterior dibujando un cuadrado negro
-      display.drawBitmap(82, 9, AlarmaFuera, 50, 50, 1);  // Mostramos la imagen de alarma modo Armada ausente
-      display.display();                                  // Lo mostramos en pantalla
+    } else if (message == "armed_away") {                   // Si el mensaje es "armed_away" (modo Armada ausente)
+      estado_armando = 0;                                   // Ponemos el estado de "armando" en 0
+      display.fillRect(82, 9, 64, 64, 0);                   // Borramos la imagen anterior dibujando un cuadrado negro
+      display.drawBitmap(82, 9, AlarmaAusente, 50, 50, 1);  // Mostramos la imagen de alarma modo Armada ausente
+      display.display();                                    // Lo mostramos en pantalla
 
     } else if (message == "arming") {     // Si el mensaje es "arming" (armando)
       estado_armando = 1;                 // Ponemos el estado de "armando" en 1 para iniciar la animación de "armando"

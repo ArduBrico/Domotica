@@ -28,17 +28,17 @@ PubSubClient client(espClient);
 
 const int botonAbrir = 2;                 // Conectamos el pulsador de abrir a D4
 const int botonCerrar = 14;               // Conectamos el pulsador de cerrar a D5
-const int botonAlarma = 12;               // Conectamos el pulsador de alarma modo "fuera de casa" a D6
-const int botonAlarma2 = 13;              // Conectamos el pulsador de alarma modo "noche" a D7
+const int botonAlarma = 12;               // Conectamos el pulsador de alarma modo "Armada ausente" a D6
+const int botonAlarma2 = 13;              // Conectamos el pulsador de alarma modo "Armada en casa" a D7
 const char* estadoGaraje = "Sin estado";  // Creamos una variable para leer el estado de la puerta
 int valAbrir = 0;                         // Variable para guardar el estado del pulsador "abrir"
 int old_valAbrir = 1;                     // Variable para guardar el estado anteior del pulsador "abrir"
 int valCerrar = 0;                        // Variable para guardar el estado del pulsador "cerrar"
 int old_valCerrar = 1;                    // Variable para guardar el estado anteior del pulsador "cerrar"
-int valAlarma = 0;                        // Variable para guardar el estado del pulsador de alarma modo "fuera de casa"
-int old_valAlarma = 1;                    // Variable para guardar el estado anteior del pulsador de alarma modo "fuera de casa"
-int valAlarma2 = 0;                       // Variable para guardar el estado del pulsador de alarma modo "noche"
-int old_valAlarma2 = 1;                   // Variable para guardar el estado anteior del pulsador de alarma modo "noche"
+int valAlarma = 0;                        // Variable para guardar el estado del pulsador de alarma modo "Armada ausente"
+int old_valAlarma = 1;                    // Variable para guardar el estado anteior del pulsador de alarma modo "Armada ausente"
+int valAlarma2 = 0;                       // Variable para guardar el estado del pulsador de alarma modo "Armada en casa"
+int old_valAlarma2 = 1;                   // Variable para guardar el estado anteior del pulsador de alarma modo "Armada en casa"
 int estado_bajando = 0;                   // Variable para indicar cuando mostrar la animación de bajar
 int estado_subiendo = 0;                  // Variable para indicar cuando mostrar la animación de subir
 int estado_armando = 0;                   // Variable para indicar cuando mostrar la animación de "armando alarma"
@@ -46,13 +46,13 @@ int s = 0;                                // Variable que usaremos para mostrar 
 int b = 4;                                // Variable que usaremos para mostrar las imagenes de la animación de bajar
 int a = 0;                                // Variable que usaremos para mostrar las imagenes de la animación de "armando alarma"
 unsigned long tiempoBotonAbrirOn;         // Lo utilizaremos para contar el tiempo que está pulsado el botón de abrir, para evitar el "efecto rebote"
-unsigned long tiempoBotonCerrarOn;        // Lo utilizaremos para contar el tiempo que está pulsado el botón de alarma modo "fuera de casa", para evitar el "efecto rebote"
-unsigned long tiempoBotonAlarmaOn;        // Lo utilizaremos para contar el tiempo que está pulsado el botón de alarma modo "noche", para evitar el "efecto rebote"
+unsigned long tiempoBotonCerrarOn;        // Lo utilizaremos para contar el tiempo que está pulsado el botón de alarma modo "Armada ausente", para evitar el "efecto rebote"
+unsigned long tiempoBotonAlarmaOn;        // Lo utilizaremos para contar el tiempo que está pulsado el botón de alarma modo "Armada en casa", para evitar el "efecto rebote"
 unsigned long tiempoBotonAlarma2On;       // Lo utilizaremos para contar el tiempo que está pulsado el botón de cerrar, para evitar el "efecto rebote"
 unsigned long tiempoBotonAbrirOff;        // Lo utilizaremos para contar el tiempo que está sin ser pulsado el botón de abrir, para evitar el "efecto rebote"
 unsigned long tiempoBotonCerrarOff;       // Lo utilizaremos para contar el tiempo que está sin ser pulsado el botón de cerrar, para evitar el "efecto rebote"
-unsigned long tiempoBotonAlarmaOff;       // Lo utilizaremos para contar el tiempo que está sin ser pulsado el botón de alarma modo "fuera de casa", para evitar el "efecto rebote"
-unsigned long tiempoBotonAlarma2Off;      // Lo utilizaremos para contar el tiempo que está sin ser pulsado el botón de alarma modo "noche", para evitar el "efecto rebote"
+unsigned long tiempoBotonAlarmaOff;       // Lo utilizaremos para contar el tiempo que está sin ser pulsado el botón de alarma modo "Armada ausente", para evitar el "efecto rebote"
+unsigned long tiempoBotonAlarma2Off;      // Lo utilizaremos para contar el tiempo que está sin ser pulsado el botón de alarma modo "Armada en casa", para evitar el "efecto rebote"
 unsigned long tiempoImagenes;             // Lo utilizaremos para controlar el tiempo que pasa entre una imagen y otra de las animaciones de la puerta
 unsigned long tiempoImagenes_armando;     // Lo utilizaremos para controlar el tiempo que pasa entre una imagen y otra de las animaciones de "armando alarma"
 bool flancoBotonAbrirOn = false;          // Variable para saber si ha pasado el tiempo necesario para evitar el "efecto rebote"
@@ -385,8 +385,8 @@ const unsigned char WifiOff[] PROGMEM = {
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 };
-// Imagen para mostrar alarma modo "fuera de casa"
-const unsigned char AlarmaFuera[] PROGMEM = {
+// Imagen para mostrar alarma modo "Armada ausente"
+const unsigned char AlarmaAusente[] PROGMEM = {
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x7f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0xff, 0xc0, 0x00, 0x00, 0x00, 0x00, 0x07, 0xff, 0xf0,
   0x00, 0x00, 0x00, 0x00, 0x1f, 0xff, 0xfe, 0x00, 0x00, 0x00, 0x00, 0xff, 0xe3, 0xff, 0x80, 0x00,
@@ -410,7 +410,7 @@ const unsigned char AlarmaFuera[] PROGMEM = {
   0x00, 0x00, 0x00, 0x03, 0xff, 0xe0, 0x00, 0x00, 0x00, 0x00, 0x00, 0xff, 0x80, 0x00, 0x00, 0x00,
   0x00, 0x00, 0x1c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 };
-// Imagen para mostrar alarma modo "noche"
+// Imagen para mostrar alarma modo "Armada en casa"
 const unsigned char AlarmaCasa[] PROGMEM = {
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0xc0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, 0xf0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1f, 0xfe,
@@ -460,7 +460,7 @@ const unsigned char AlarmaOff[] PROGMEM = {
   0x00, 0x00, 0x00, 0x01, 0xff, 0xe0, 0x00, 0x00, 0x00, 0x00, 0x00, 0xff, 0x80, 0x00, 0x00, 0x00,
   0x00, 0x00, 0x1c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 };
-// Imagen para combinar con alarma modo "fuera de casa" para crear la animación
+// Imagen para combinar con alarma modo "Armada ausente" para crear la animación
 const unsigned char AlarmaArmando[] PROGMEM = {
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -496,7 +496,7 @@ const unsigned char* imagenes[5] = {
 };
 // Usamos un "array" para llamar a la imagen que necesitemos para la animación armando alarma
 const unsigned char* imagenes_A[2] = {
-  AlarmaFuera,   // Lo llamaremos con "imagenes_A[0]"
+  AlarmaAusente,   // Lo llamaremos con "imagenes_A[0]"
   AlarmaArmando  // Lo llamaremos con "imagenes_A[1]"
 };
 void setup() {
@@ -665,7 +665,7 @@ void loop() {
     bajando();                       // Llamamos a la instrucción "bajando"
   }
 
-  if (estado_armando == 1) {  // Si hemos recibido el mensaje de "alarma fuera de casa"
+  if (estado_armando == 1) {  // Si hemos recibido el mensaje de "alarma Armada ausente"
     armando();                // Llamamos a la instrucción "armando"
   }
 
@@ -777,16 +777,16 @@ void callback(char* topic, byte* payload, unsigned int length) {  // Función pa
       display.drawBitmap(82, 9, AlarmaOff, 50, 50, 1);  // Mostramos la imagen de alarma desconectada
       display.display();                                // Lo mostramos en pantalla
 
-    } else if (message == "armed_home") {                // Si el mensaje es "armed_home" (modo noche)
+    } else if (message == "armed_home") {                // Si el mensaje es "armed_home" (modo Armada en casa)
       estado_armando = 0;                                // Ponemos el estado de "armando" en 0
       display.fillRect(82, 9, 64, 64, 0);                // Borramos la imagen anterior dibujando un cuadrado negro
-      display.drawBitmap(82, 9, AlarmaCasa, 50, 50, 1);  // Mostramos la imagen de alarma modo noche
+      display.drawBitmap(82, 9, AlarmaCasa, 50, 50, 1);  // Mostramos la imagen de alarma modo Armada en casa
       display.display();                                 // Lo mostramos en pantalla
 
-    } else if (message == "armed_away") {                 // Si el mensaje es "armed_away" (modo fuera de casa)
+    } else if (message == "armed_away") {                 // Si el mensaje es "armed_away" (modo Armada ausente)
       estado_armando = 0;                                 // Ponemos el estado de "armando" en 0
       display.fillRect(82, 9, 64, 64, 0);                 // Borramos la imagen anterior dibujando un cuadrado negro
-      display.drawBitmap(82, 9, AlarmaFuera, 50, 50, 1);  // Mostramos la imagen de alarma modo fuera de casa
+      display.drawBitmap(82, 9, AlarmaFuera, 50, 50, 1);  // Mostramos la imagen de alarma modo Armada ausente
       display.display();                                  // Lo mostramos en pantalla
 
     } else if (message == "arming") {     // Si el mensaje es "arming" (armando)

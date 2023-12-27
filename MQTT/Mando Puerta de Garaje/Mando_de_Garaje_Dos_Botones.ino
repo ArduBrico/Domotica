@@ -12,8 +12,8 @@
 
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);  // Configuramos los parametros para la pantalla
 
-const char* ssid = "SSID";                 // Configuramos nuestra red Wifi
-const char* password = "Password SSID";    // Configuramos la contraseña de nuestra red Wifi
+const char* ssid = "SSID";                 // Mismo nombre que el punto de acceso wifi que configuramos en nuestro teléfono móvil
+const char* password = "Password SSID";    // Configuramos la contraseña de nuestro punto de acceso
 const char* mqtt_server = "xxxxxxxx";      // Configuramos nuestra I.P. EXTERNA de nuestro servidor Home Assistant,por ejemplo, duckdns, etc
 int mqttport = 1883;                       // Puerto para MQTT
 const char* mqttusuario = "MQTT";          // Configuramos nuestro usuario MQTT

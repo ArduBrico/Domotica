@@ -1,0 +1,10 @@
+telegram_bot:
+  - platform: broadcast
+    api_key: API_KEY
+    allowed_chat_ids:
+      - CHAT_ID
+
+notify:
+  - platform: telegram
+    name: NOMBRE_CHAT
+    chat_id: CHAT_ID

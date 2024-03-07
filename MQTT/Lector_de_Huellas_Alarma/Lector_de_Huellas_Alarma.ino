@@ -29,7 +29,7 @@ String User[4] = { User1, User2, User3, User4 };  // "array" con los usuarios, t
 ///// FIN PARAMETROS CONFIGURABLES /////
 
 #define CLIENT_ID "Lector de huellas"  // ID del dispositivo, debe ser único en tu sistema
-#define MQTT_TOPIC "lector_huellas"    // Topic específico para enviar los mensajes de MQTT al sensor binario
+#define MQTT_TOPIC "lector_huellas"    // Topic específico para enviar los mensajes de MQTT al sensor
 
 WiFiClient espClient;
 PubSubClient client(espClient);

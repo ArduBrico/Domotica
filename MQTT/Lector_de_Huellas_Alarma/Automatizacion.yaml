@@ -1,0 +1,4 @@
+  sensor:
+    - name: "Lector de huellas"
+      unique_id: "lector_huellas"
+      state_topic: "lector_huellas" 

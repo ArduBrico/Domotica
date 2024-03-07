@@ -306,7 +306,7 @@ void reconnect() {
   }
 }
 void callback(char* topic, byte* payload, unsigned int length) {  // Función para poder recibir los mensajes por MQTT
-  Serial.print("Mensaje recivido [");                             // Mostramos por serial cuando recibimos un mensaje
+  Serial.print("Mensaje recibido [");                             // Mostramos por serial cuando recibimos un mensaje
   Serial.print(topic);                                            // Mostramos el topic que recibimos
   Serial.print("] ");                                             //
   for (int i = 0; i < length; i++) {                              //

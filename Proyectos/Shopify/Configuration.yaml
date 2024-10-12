@@ -1,0 +1,19 @@
+input_text:
+  shopify_pedido_id:
+    name: Pedido ID
+    max: 255
+  shopify_pedido_cliente:
+    name: Cliente
+    max: 255
+  shopify_pedido_email:
+    name: Email
+    max: 255
+  shopify_pedido_direccion:
+    name: Dirección
+    max: 255
+  shopify_pedido_productos:
+    name: Productos
+    max: 1000
+  shopify_pedido_total:
+    name: Total
+    max: 255

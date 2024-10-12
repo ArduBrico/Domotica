@@ -1,0 +1,24 @@
+{% if states('input_text.shopify_pedido_id') != '' %}
+  <span style="font-size: 200px; font-weight: bold;">📦 NUEVO PEDIDO 📦</span><br><br>
+  
+  <span style="font-size: 18px; font-weight: bold;">ID de Pedido:</span><br>
+  <span style="font-size: 18px;">{{ states('input_text.shopify_pedido_id') }}</span><br><br>
+
+  <span style="font-size: 18px; font-weight: bold;">Cliente:</span><br>
+  <span style="font-size: 18px;">{{ states('input_text.shopify_pedido_cliente') }}</span><br><br>
+
+  <span style="font-size: 18px; font-weight: bold;">Dirección de Envío:</span><br>
+  <span style="font-size: 18px;">{{ states('input_text.shopify_pedido_direccion') }}</span><br><br>
+
+  <span style="font-size: 18px; font-weight: bold;">Productos:</span><br>
+  {% set productos = states('input_text.shopify_pedido_productos').split(',') %}
+  {% for item in productos %}
+  <span style="font-size: 16px;">{{ item | trim }}</span><br>
+  {% endfor %}
+
+  <span style="font-size: 18px; font-weight: bold;">Total:</span><br>
+  <span style="font-size: 18px;">{{ states('input_text.shopify_pedido_total') }}</span><br>
+{% else %}
+  <span style="font-size: 18px;">No hay pedidos recientes.</span>
+{% endif %}
+

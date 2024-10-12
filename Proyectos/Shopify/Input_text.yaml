@@ -1,0 +1,40 @@
+  - service: input_text.set_value
+    target:
+      entity_id: input_text.shopify_pedido_id
+    data:
+      value: "{{ trigger.json.id }}"
+  - service: input_text.set_value
+    target:
+      entity_id: input_text.shopify_pedido_cliente
+    data:
+      value: >-
+        {{ trigger.json.customer.first_name }} {{
+        trigger.json.customer.last_name }}
+  - service: input_text.set_value
+    target:
+      entity_id: input_text.shopify_pedido_email
+    data:
+      value: "{{ trigger.json.customer.email }}"
+  - service: input_text.set_value
+    target:
+      entity_id: input_text.shopify_pedido_direccion
+    data:
+      value: >-
+        {{ trigger.json.shipping_address.address1 }}, {{
+        trigger.json.shipping_address.city }}, {{
+        trigger.json.shipping_address.zip }}, {{
+        trigger.json.shipping_address.country }}
+  - service: input_text.set_value
+    target:
+      entity_id: input_text.shopify_pedido_productos
+    data:
+      value: |-
+        {% for item in trigger.json.line_items %}
+          - {{ item.quantity }} x {{ item.title }} ({{ item.price | float }} {{ trigger.json.currency }})
+        {% endfor %}
+  - service: input_text.set_value
+    target:
+      entity_id: input_text.shopify_pedido_total
+    data:
+      value: "{{ trigger.json.total_price }} {{ trigger.json.currency }}"
+

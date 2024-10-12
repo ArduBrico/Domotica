@@ -1,0 +1,29 @@
+service: notify.telegram_tienda_online
+metadata: {}
+data:
+  message: >-
+    📦 *Nuevo Pedido* 📦
+
+
+    🛒 Pedido ID: {{ trigger.json.id }}
+
+
+    🧑‍💼 Cliente: {{ trigger.json.customer.first_name }} {{
+    trigger.json.customer.last_name }}
+
+
+    ✉️ Email: {{ trigger.json.customer.email }}
+
+
+    📦 Dirección de Envío:
+      {{ trigger.json.shipping_address.address1 }},
+      {{ trigger.json.shipping_address.city }},
+      {{ trigger.json.shipping_address.zip }},
+      {{ trigger.json.shipping_address.country }}
+
+    🛍️ *Productos:* {% for item in trigger.json.line_items %}
+      - {{ item.quantity }} x {{ item.title }} ({{ item.price | float }} {{ trigger.json.currency }})
+    {% endfor %}
+
+    💵 Total: {{ trigger.json.total_price }} {{ trigger.json.currency }}
+

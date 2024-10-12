@@ -1,6 +1,5 @@
 {% if states('input_text.shopify_pedido_id') != '' %}
-  <span style="font-size: 200px; font-weight: bold;">📦 NUEVO PEDIDO 📦</span><br><br>
-  
+   
   <span style="font-size: 18px; font-weight: bold;">ID de Pedido:</span><br>
   <span style="font-size: 18px;">{{ states('input_text.shopify_pedido_id') }}</span><br><br>
 
